@@ -33,10 +33,12 @@ Engine_Sines : CroneEngine {
       Out.ar(out, Pan2.ar(car_decimate * amp_ * vol_, pan_));
     });
 
-    SynthDef.new(\sines_output, {|in, out|
+    SynthDef.new(\sines_output, {|in, out, sendA=0, sendB=0, sendABus=0, sendBBus=0|
         var sig = In.ar(in, 2);
         sig = Limiter.ar(sig, 1.0, 0.01); // Apply Limiter.ar to prevent clipping
         Out.ar(out, sig);
+        Out.ar(sendABus, sendA*sig);
+        Out.ar(sendBBus, sendB*sig);
     }).add;
 
     def.send(server);
@@ -53,7 +55,7 @@ Engine_Sines : CroneEngine {
     });
 
     server.sync;
-    output_stage = Synth.new(\sines_output, [\out, context.out_b, \in, bus], addAction: \addToTail);
+    output_stage = Synth.new(\sines_output, [\out, context.out_b, \in, bus, \sendABus, (~sendA ? Server.default.outputBus), \sendBBus, (~sendB ? Server.default.outputBus)], addAction: \addToTail);
     server.sync;
 
     #[\sample_rate, \bit_depth].do({

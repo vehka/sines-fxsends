@@ -310,6 +310,10 @@ function add_params()
   -- global pan settings
   params:add{type = "number", id = "global_pan", name = "global panning", min = 0, max = 1, default = 0, formatter = function(param) return global_pan_formatter(param:get()) end, action = function(x) set_global_pan(x) end}
 
+  -- FX send
+  params:add_control("send_a", "send a", controlspec.new(0, 1, "lin", 0, 0))
+  params:add_control("send_b", "send b", controlspec.new(0, 1, "lin", 0, 0))
+  
   for i = 1, 16 do
     -- set voice params
     params:add_group(i .. "n voice", 13)
