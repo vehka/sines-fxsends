@@ -26,7 +26,7 @@ MusicUtil = require "musicutil"
 
 local max_slider_size = 32
 local prev_output_level = 0
-local prev_amp_slew = 0
+local prev_slew_level = 0
 local prev_params_jump = 1
 local sliders = {}
 local fader_follow_vals = {}
@@ -274,7 +274,7 @@ function add_params()
   min = 0, max = 127, default = 60, formatter = function(param) return MusicUtil.note_num_to_name(param:get(), true) end, action = function() set_notes() end}
 
   -- amp slew
-  params:add_control("amp_slew", "amp slew", controlspec.new(0.01, 10, 'lin', 0.01, 0.7, 's'))
+  params:add_control("amp_slew", "amp slew", controlspec.new(0.01, 10, 'lin', 0.01, 1.5, 's'))
   params:set_action("amp_slew", function(x) set_amp_slew(x) end)
 
   -- 16n control
@@ -464,7 +464,7 @@ function set_play_mode(x)
   if x == 0 then
     -- faders
     params:set('output_level', prev_output_level)
-    params:set('amp_slew', prev_amp_slew)
+    params:set('amp_slew', prev_slew_level)
     params:set('16n_params_jump', prev_params_jump)
     for i = 1,16 do
       -- init prev_envs with correct values
