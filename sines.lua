@@ -21,7 +21,7 @@
 
 engine.name = "Sines"
 _mods = require 'core/mods'
-_16n = include "sines/lib/16n"
+_16n = include "lib/16n"
 MusicUtil = require "musicutil"
 
 local max_slider_size = 32
@@ -312,7 +312,9 @@ function add_params()
 
   -- FX send
   params:add_control("send_a", "send a", controlspec.new(0, 1, "lin", 0, 0))
+  params:set_action("send_a", function(x) engine.send_a(x) end)
   params:add_control("send_b", "send b", controlspec.new(0, 1, "lin", 0, 0))
+  params:set_action("send_b", function(x) engine.send_b(x) end)
   
   for i = 1, 16 do
     -- set voice params

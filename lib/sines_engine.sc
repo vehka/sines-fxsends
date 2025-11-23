@@ -5,6 +5,8 @@
 Engine_Sines : CroneEngine {
   classvar num;
   var <synth, <bus, <output_stage;
+  var sendA = 0;
+  var sendB = 0;
 
   *initClass {  num = 16; }
 
@@ -55,7 +57,7 @@ Engine_Sines : CroneEngine {
     });
 
     server.sync;
-    output_stage = Synth.new(\sines_output, [\out, context.out_b, \in, bus, \sendABus, (~sendA ? Server.default.outputBus), \sendBBus, (~sendB ? Server.default.outputBus)], addAction: \addToTail);
+    output_stage = Synth.new(\sines_output, [\out, context.out_b, \in, bus, \sendABus, (~sendA ? Server.default.outputBus).index, \sendBBus, (~sendB ? Server.default.outputBus).index], target: context.xg, addAction: \addToTail);
     server.sync;
 
     #[\sample_rate, \bit_depth].do({
@@ -65,6 +67,16 @@ Engine_Sines : CroneEngine {
         var i = msg[1];
         synth[i].set(name, msg[2]);
       });
+    });
+
+    this.addCommand("send_a", "f", { arg msg;
+      sendA = msg[1];
+      output_stage.set(\sendA, sendA);
+    });
+
+    this.addCommand("send_b", "f", { arg msg;
+      sendB = msg[1];
+      output_stage.set(\sendB, sendB);
     });
 
   }
